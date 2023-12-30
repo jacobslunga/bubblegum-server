@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -42,6 +43,7 @@ func (c *UserController) GetUserById(ctx *gin.Context) {
 }
 
 func (c *UserController) GetMe(ctx *gin.Context) {
+	var jwtSecret string = os.Getenv("JWT_SECRET")
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
@@ -60,7 +62,7 @@ func (c *UserController) GetMe(ctx *gin.Context) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte("your_jwt_secret_here"), nil
+		return []byte(jwtSecret), nil
 	})
 
 	if err != nil {
