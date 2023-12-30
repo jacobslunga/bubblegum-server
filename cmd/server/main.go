@@ -7,13 +7,12 @@ import (
 )
 
 func main() {
-  db:= config.SetupDB()
-  
-  err := db.AutoMigrate(&model.User{}, &model.Component{})
-  if err != nil {
-    panic(err)
-  }
+	db := config.SetupDB()
+	err := db.AutoMigrate(&model.User{}, &model.Component{})
+	if err != nil {
+		panic(err)
+	}
 
-  r := router.SetupRouter()
-  r.Run()
+	r := router.SetupRouter(db)
+	r.Run()
 }
